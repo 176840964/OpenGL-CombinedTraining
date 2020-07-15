@@ -74,6 +74,7 @@ void SetupRC() {
 
 //开始渲染
 void RenderScene(void) {
+    // 1
     //地板颜色
     static GLfloat vFloorColor[] = {0.0, 1.0, 0.0, 1.0};
     //打球颜色
@@ -81,15 +82,17 @@ void RenderScene(void) {
     //小球颜色
     static GLfloat vSphereColor[] = {0, 0, 1, 1};
     
+    //2
     //此处需要使用静态变量 原因CStopWatch中有一个成员变量m_LastCount，需要记录，当调用GetElapsedSeconds时，内部实现是当前的秒数与m_LastCount中的秒数进行插值
     static CStopWatch rotTimer;
     //旋转度数
     float yRot = rotTimer.GetElapsedSeconds() * 60;
     
+    //3
     //清除一个或一组特定的缓冲区
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
-    //观察者
+    //4.观察者
     M3DMatrix44f mCamera;
     cameraFrame.GetCameraMatrix(mCamera);
     
@@ -98,14 +101,14 @@ void RenderScene(void) {
     
 //    modelViewMatrix.PushMatrix(objectFrame);
     
-    //渲染地板
+    //5渲染地板
     shaderManager.UseStockShader(GLT_SHADER_FLAT, transformPipeline.GetModelViewProjectionMatrix(), vFloorColor);
     floorBatch.Draw();
     
     //光源
     M3DVector4f vLightPos = {0.0f, 10.0f, 5.0f, 1.0f};
     
-    //渲染大球
+    //6渲染大球
     modelViewMatrix.Translate(0.0f, 0.0f, -3.0f);
     modelViewMatrix.PushMatrix();
     modelViewMatrix.Rotate(yRot, 0.0f, 1.0f, 0.0f);
@@ -113,7 +116,7 @@ void RenderScene(void) {
     torusBatch.Draw();
     modelViewMatrix.PopMatrix();
     
-    //渲染50个（NUM_SPHERES）随机小球
+    //7渲染50个（NUM_SPHERES）随机小球
     for (int i = 0; i < NUM_SPHERES; i++) {
         modelViewMatrix.PushMatrix();
         modelViewMatrix.MultMatrix(spheres[i]);
@@ -122,7 +125,7 @@ void RenderScene(void) {
         modelViewMatrix.PopMatrix();
     }
     
-    //渲染一个小球绕着打球旋转
+    //8渲染一个小球绕着打球旋转
     modelViewMatrix.Rotate(yRot * -2.0f, 0.0f, 1.0f, 0.0f);
     modelViewMatrix.Translate(0.8f, 0.0f, 0.0f);
 //    shaderManager.UseStockShader(GLT_SHADER_FLAT, transformPipeline.GetModelViewProjectionMatrix(), vSphereColor);
@@ -135,7 +138,7 @@ void RenderScene(void) {
     
     //将在后台缓冲区进行渲染，然后在结束时交换到前台
     glutSwapBuffers();
-    //触发重新绘制
+    //9触发重新绘制
     glutPostRedisplay();
 }
 
